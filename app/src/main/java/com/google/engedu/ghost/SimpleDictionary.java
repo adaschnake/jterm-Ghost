@@ -61,6 +61,21 @@ public class SimpleDictionary implements GhostDictionary {
      */
     @Override
     public boolean isWord(String word) {
+        int hi = words.size()-1;
+        int lo = 0;
+
+        while(lo<=hi) {
+            int mid = lo + (hi - lo) / 2;
+            if (words.get(mid) == word) {
+                return true;
+            }
+            else if (word.compareTo(words.get(mid))<0) {
+                hi = mid-1;
+            }
+            else if (word.compareTo(words.get(mid))>0) {
+                lo = mid+1;
+            }
+        }
         return words.contains(word);
     }
 
@@ -72,9 +87,39 @@ public class SimpleDictionary implements GhostDictionary {
      * @return
      */
     @Override
-    public String getAnyWordStartingWith(String prefix) throws NoSuchElementException {
+    public String getAnyWordStartingWith(String prefix) {
         // TODO(you): Implement using Binary Search
+        int hi = words.size()-1;
+        int lo = 0;
+
+        while(lo<=hi)
+        {
+           int mid = lo+(hi-lo)/2;
+            if (startsWith(words.get(mid),prefix))
+           {
+                return words.get(mid);
+           }
+            //if the prefix is alphabetically before the word
+            else if(prefix.compareTo(words.get(mid))<0)
+            {
+                hi = mid-1;
+            }
+            //if the prefix is alphabetically after the word
+            else if(prefix.compareTo(words.get(mid))>0)
+            {
+                lo = mid +1;
+            }
+        }
         return null;
+    }
+
+    private boolean startsWith(String word, String prefix)
+    {
+        int len = prefix.length();
+        if (word.substring(0,len).equals(prefix))
+            return true;
+        else
+            return false;
     }
 
     /**
@@ -88,9 +133,45 @@ public class SimpleDictionary implements GhostDictionary {
      */
     @Override
     public String getGoodWordStartingWith(String prefix) {
-        String selected = null;
-        // TODO(you): Implement using Binary Search + some special magic
-        return selected;
+//        String selected = null;
+//        ArrayList<String> options = new ArrayList<>();
+//
+//        int hi = words.size()-1;
+//        int lo = 0;
+//        int index=-1;
+//        while (selected==null) {
+//            while (lo <= hi) {
+//                int mid = lo + (hi - lo) / 2;
+//                if (startsWith(words.get(mid), prefix)) {
+//                    options.add(words.get(mid));
+//                    index=mid;
+//                }
+//                //if the prefix is alphabetically before the word
+//                else if (prefix.compareTo(words.get(mid)) < 0) {
+//                    hi = mid - 1;
+//                }
+//                //if the prefix is alphabetically after the word
+//                else if (prefix.compareTo(words.get(mid)) > 0) {
+//                    lo = mid + 1;
+//                }
+//            }
+//            if (!(index<0 || index>words.size())) {
+//                while (words.get(index + 1).startsWith(prefix)) {
+//                    options.add(words.get(index + 1));
+//                    index++;
+//                }
+//                for (String word : options) {
+//                    if ((words.get(index).length() - prefix.length()) % 2 != 0)
+//                        selected = words.get(index);
+//                    else
+//                        return options.get(0);
+//                }
+//            }
+//        }
+//        // TODO(you): Implement using Binary Search + some special magic
+//        return selected;
+
+        return getAnyWordStartingWith(prefix);
     }
 
 

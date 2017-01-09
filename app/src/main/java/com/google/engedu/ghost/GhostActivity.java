@@ -52,14 +52,28 @@ public class GhostActivity extends AppCompatActivity {
             InputStream inputStream = assetManager.open("words.txt");
 
             dictionary = new SimpleDictionary(inputStream);
-                      // new FastDictionary(inputStream);
+            // new FastDictionary(inputStream);
         } catch (IOException e) {
             Toast toast = Toast.makeText(this, R.string.load_dictionary_failed, Toast.LENGTH_LONG);
             toast.show();
         }
+        if (savedInstanceState == null)
+        {
+            onStart(null);
+        }
+        else {
+            // TODO(you): Handle Bundle savedInstanceState
+            if (savedInstanceState.getBoolean(KEY_USER_TURN))
+                this.userTurn = Players.PLAYER;
 
-        // TODO(you): Handle Bundle savedInstanceState
-        onStart(null);
+            else
+                this.userTurn = Players.COMPUTER;
+
+            currentWord = savedInstanceState.getString(KEY_CURRENT_WORD);
+            String status = savedInstanceState.getString(KEY_SAVED_STATUS);
+            ((TextView) findViewById(R.id.gameStatus)).setText(status);
+            ((TextView) findViewById(R.id.ghostText)).setText(currentWord);
+        }
     }
 
 
@@ -67,6 +81,9 @@ public class GhostActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         // TODO(you): Handle onSaveInstanceState
+        outState.putBoolean(KEY_USER_TURN, userTurn== Players.PLAYER);
+        outState.putString(KEY_CURRENT_WORD, currentWord);
+        outState.putString(KEY_SAVED_STATUS, ((TextView)findViewById(R.id.gameStatus)).getText().toString());
     }
 
     @Override
