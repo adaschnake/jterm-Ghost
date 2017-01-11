@@ -17,6 +17,7 @@ package com.google.engedu.ghost;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Set;
 
 public class TrieNode {
     // A map from the next character in the alphabet to the trie node containing those words
@@ -34,8 +35,38 @@ public class TrieNode {
      *
      * @param s String representing partial suffix of a word.
      */
-    public void add(String s) {
-        // TODO(you): add String s to this node.
+//    public void add(String s) {
+//        // TODO(you): add String s to this node.
+//        char head = s.charAt(0);
+//        if (children.get(head)==null)
+//            children.put(head, new TrieNode());
+//
+//        add(s, children.get(head));
+//
+//    }
+
+    public void add(String s)
+    {
+        //base case
+        if (s.isEmpty())
+        {
+            isWord=true;
+            //System.out.println("end of word\n");
+
+        }
+        //recursive
+        else
+        {
+            char head = s.charAt(0);
+            if (!children.containsKey(head))
+            {
+                children.put(head, new TrieNode());
+            }
+            //System.out.println("adding "+head);
+
+            //add(s.substring(1),n.children.get(head));
+            children.get(head).add(s.substring(1));
+        }
     }
 
     /**
@@ -44,9 +75,43 @@ public class TrieNode {
      * @param s String representing partial suffix of a word.
      * @return
      */
-    public boolean isWord(String s) {
-        // TODO(you): determine whether this node is part of a complete word for String s.
-        return false;
+//    public boolean isWord(String s) {
+//        // TODO(you): determine whether this node is part of a complete word for String s.
+//        System.out.println("calling isWord");
+//        if (children.get(s.charAt(0))==null)
+//            return false;
+//        else
+//            return isWord(s.substring(1));
+//    }
+
+    public boolean isWord (String s)
+    {
+        //System.out.println("current letter: "+s.charAt(0));
+        //base case
+        //if it's the end of the word
+        if ( s.isEmpty())
+        {
+        //System.out.println("end of word, "+isWord);
+        return isWord;
+         }
+        //check if null
+        else if (!children.containsKey(s.charAt(0)))
+        {
+            //System.out.println("null node");
+
+            return false;
+        }
+
+        //recursive
+        else
+        {
+            String rest = s.substring(1);
+            char head = s.charAt(0);
+            //System.out.println("recursing");
+            //System.out.println("here, head= "+s.charAt(0)+ ", rest= "+rest);
+
+            return children.get(head).isWord(rest);
+        }
     }
 
     /**
@@ -57,7 +122,40 @@ public class TrieNode {
      */
     public String getAnyWordStartingWith(String s) {
         // TODO(you):
-        return null;
+        Character head;
+        String rest;
+
+        if (s.isEmpty()) {
+            if (isWord) {
+                return "";
+            } else {
+                Set<Character> keySet = children.keySet();
+                if (keySet.isEmpty()) {
+                    return null;
+                }
+
+                head = keySet.iterator().next();
+                rest = "";
+            }
+        }
+        else
+        {
+            head = s.charAt(0);
+            rest = s.substring(0);
+            if(!children.containsKey(head))
+            {
+                return null;
+            }
+
+        }
+
+        String word = children.get(head).getAnyWordStartingWith(rest);
+
+        if (word == null)
+        {
+            return null;
+        }
+        return head+ word;
     }
 
     /**
